@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="/webjars/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/a.js}" defer></script>
+    <meta charset="UTF-8">
+    <title>Hello</title>
+</head>
+<body>
+    <table border="1" width="200">
+        <th>일반 발송</th>
+        <th>결과</th>
+        <tr  align="center">
+            <td width="100">
+                <button type="button"  align="center" th:id="normalMail">발송</button>
+            </td>
+            <td width="100">
+                <div th:id="normalMailResult"></div>
+            </td>
+        </tr>
+    </table>
+    <table border="1" width="200">
+        <th>인증 발송</th>
+        <th>결과</th>
+        <tr  align="center">
+            <td width="100">
+                <button type="button"  align="center" th:id="authMail">발송</button>
+            </td>
+            <td width="100">
+                <div th:id="authMailResult"></div>
+            </td>
+        </tr>
+    </table>
+    <label><input type="checkbox" th:id="normalType">일반</label></label>
+    <label><input type="checkbox" th:id="authType">인증</label></label>
+    <button type="button"  align="center" th:id="mailSender">발송</button>
+    <table border="1" width="200">
+        <th>결과</th>
+        <tr  align="center">
+            <td width="100">
+                <div th:id="mailResult"></div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
