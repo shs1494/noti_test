@@ -10,7 +10,6 @@ import java.util.List;
 @Setter
 @ToString
 public class EmailResultInfo {
-//    private List<Email_Results_Header> results_header;
     private String requestId;
     private List<EmailResultBody> results;
 }

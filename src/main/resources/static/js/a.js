@@ -32,22 +32,27 @@ function authMailSender() {
 }
 
 function mailSender() {
-
     $.ajax({
-        url: "/email",
-        type: "get",
-        data: {
-            // type: document.getElementById('result')
-        },
+        url: "/totalEmail",
+        type: "post",
+        contentType: 'application/json',
+        data: checkBoxValue(),
         dataType: "text",
-        success: function (data) {
-            $("#mailResult").text(data);
+        success: function (result) {
+            $("#mailResult").text(result);
         }
     });
 }
 
 function checkBoxValue() {
-    const query = 'input[name="type"]:checked';
-    const selectedEls = document.querySelectorAll(query);
-    let result = selectedEls.values();
+
+    var data = {
+        'mailType' : document.getElementById("mailType").value,
+        'receiveType': document.getElementById("receiveType").value
+    };
+
+    var jsonData = JSON.stringify(data);
+    console.log(jsonData);
+
+    return jsonData;
 }
