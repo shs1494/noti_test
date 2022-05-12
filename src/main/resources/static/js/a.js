@@ -1,35 +1,4 @@
-$("#normalMail").on("click", normalMailSender);
-$("#authMail").on("click", authMailSender);
 $("#mailSender").on("click", mailSender);
-// document.getElementById("hello").onclick = a;
-
-function normalMailSender() {
-    $.ajax({
-        url: "/email",
-        type: "get",
-        data: {
-            type: "normal"
-        },
-        dataType: "text",
-        success: function (data) {
-             $("#normalMailResult").text(data);
-        }
-    });
-}
-
-function authMailSender() {
-    $.ajax({
-        url: "/email",
-        type: "get",
-        data: {
-            type: "auth"
-        },
-        dataType: "text",
-        success: function (data) {
-            $("#authMailResult").text(data);
-        }
-    });
-}
 
 function mailSender() {
     $.ajax({
@@ -45,10 +14,14 @@ function mailSender() {
 }
 
 function checkBoxValue() {
+    var receiveTypes = [];
+    $("input[name='receiveType']:checked").each(function() {
+    receiveTypes.push($(this).attr('value'));
+    });
 
     var data = {
-        'mailType' : document.getElementById("mailType").value,
-        'receiveType': document.getElementById("receiveType").value
+        mailType : $("input[name='mailType']:checked").val(),
+        receiveTypes: receiveTypes
     };
 
     var jsonData = JSON.stringify(data);

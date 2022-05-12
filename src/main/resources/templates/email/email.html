@@ -32,11 +32,13 @@
             </td>
         </tr>
     </table>
-    <label><input type="checkbox" th:id="mailType" th:value="normal">일반</label></label>
-    <label><input type="checkbox" th:id="mailType" th:value="auth">인증</label></label>
+    <label><input type="radio" th:name="mailType" th:value="normal">일반</label></label>
+    <label><input type="radio" th:name="mailType" th:value="auth">인증</label></label>
+    <label><input type="radio" th:name="mailType" th:value="ad">광고</label></label>
+    <label><input type="radio" th:name="mailType" th:value="tag">태그</label></label>
     <br>
-    <label><input type="checkbox" th:id="receiveType" th:value="refer">참조</label></label>
-    <label><input type="checkbox" th:id="receiveType" th:value="hrefer">숨은참조</label></label>
+    <label><input type="checkbox" th:name="receiveType" th:value="MRT1">참조</label></label>
+    <label><input type="checkbox" th:name="receiveType" th:value="MRT2">숨은참조</label></label>
     <button type="button"  align="center" th:id="mailSender">발송</button>
     <table border="1" width="200">
         <th>결과</th>
