@@ -3,7 +3,6 @@ package com.noti.platform.first.master.email.service;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.noti.platform.first.common.CloudApiHelper;
 import com.noti.platform.first.domain.email.request.CommonInfo;
 import com.noti.platform.first.domain.email.request.RequestDTO;
 import com.noti.platform.first.domain.email.response.EmailResultHeader;
@@ -41,7 +40,6 @@ public class EmailService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.set("X-Secret-Key", CloudApiHelper.readJsonFile().getEmailSecretkey());
         headers.set("X-Secret-Key", commonInfo.getEmailSecretkey());
 
         HttpEntity<String> requestEntity = new HttpEntity<>(requestJson(requestDTO.getMailType(), requestDTO.getReceiveTypes()), headers);
@@ -67,7 +65,7 @@ public class EmailService {
                 break;
         }
 
-        String url = "https://api-mail.cloud.toast.com/email/v2.0/appKeys/" + CloudApiHelper.readJsonFile().getEmailAppkey() + uri;
+        String url = "https://api-mail.cloud.toast.com/email/v2.0/appKeys/" + commonInfo.getEmailAppkey() + uri;
 
         return url;
     }
@@ -79,20 +77,20 @@ public class EmailService {
             case "normal":
                 String receiveType = "";
                 if (receiveTypeSets.contains("MRT1")) {
-                    receiveType += ",{\"receiveMailAddr\":\"" + CloudApiHelper.readJsonFile().getEmailAddress() + "\",\"receiveType\":\"MRT1\"}";
+                    receiveType += ",{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\",\"receiveType\":\"MRT1\"}";
                 }
                 if (receiveTypeSets.contains("MRT2")) {
-                    receiveType += ",{\"receiveMailAddr\":\"" + CloudApiHelper.readJsonFile().getEmailAddress() + "\",\"receiveType\":\"MRT2\"}";
+                    receiveType += ",{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\",\"receiveType\":\"MRT2\"}";
                 }
-                jsonBody = "{\"senderAddress\":\"" + CloudApiHelper.readJsonFile().getEmailAddress() + "\", \"title\":\"test\",\"body\":\"일반 테스트\",\"receiverList\":["
-                        + "{\"receiveMailAddr\":\"" + CloudApiHelper.readJsonFile().getEmailAddress() + "\",\"receiveType\":\"MRT0\"}"
+                jsonBody = "{\"senderAddress\":\"" + commonInfo.getEmailAddress() + "\", \"title\":\"test\",\"body\":\"일반 테스트\",\"receiverList\":["
+                        + "{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\",\"receiveType\":\"MRT0\"}"
                 + receiveType + "]}";
                 break;
             case "auth":
-                jsonBody = "{\"senderAddress\":\"" + CloudApiHelper.readJsonFile().getEmailAddress() + "\", \"title\":\"test\",\"body\":\"인증 테스트\",\"receiver\":{\"receiveMailAddr\":\"" + CloudApiHelper.readJsonFile().getEmailAddress() + "\"}}";
+                jsonBody = "{\"senderAddress\":\"" + commonInfo.getEmailAddress() + "\", \"title\":\"test\",\"body\":\"인증 테스트\",\"receiver\":{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\"}}";
                 break;
             case "tag":
-                jsonBody = "{\"senderAddress\":\"" + CloudApiHelper.readJsonFile().getEmailAddress() + "\", \"title\":\"test\",\"body\":\"태그 테스트\",\"receiverList\":[{\"receiveMailAddr\":\"" + CloudApiHelper.readJsonFile().getEmailAddress() + "\",\"receiveType\":\"MRT0\"}]}";
+                jsonBody = "{\"senderAddress\":\"" + commonInfo.getEmailAddress() + "\", \"title\":\"test\",\"body\":\"태그 테스트\",\"receiverList\":[{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\",\"receiveType\":\"MRT0\"}]}";
                 break;
         }
         return jsonBody;
