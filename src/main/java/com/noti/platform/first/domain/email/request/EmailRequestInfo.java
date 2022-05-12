@@ -1,21 +1,17 @@
-package com.noti.platform.first.domain.request;
+package com.noti.platform.first.domain.email.request;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
-@ToString
 public class EmailRequestInfo {
     private String templateId;
     private String parameterKey = "";
     private String parameterValue = "";
     private TemplateInfo templateParameter = new TemplateInfo();
-
     private List<ReceiveInfo> receiveMailAddr;
 }
 
@@ -28,7 +24,4 @@ class TemplateInfo {
     private String parameterKey = "";
     private String parameterValue = "";
 
-    public TemplateInfo() {
-
-    }
 }

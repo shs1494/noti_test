@@ -1,4 +1,4 @@
-package com.noti.platform.first.domain.request;
+package com.noti.platform.first.domain.email.request;
 
 public class CommonInfo {
     private String emailAppkey;
