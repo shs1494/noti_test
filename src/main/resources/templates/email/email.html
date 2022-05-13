@@ -8,30 +8,6 @@
     <title>Hello</title>
 </head>
 <body>
-    <table border="1" width="200">
-        <th>일반 발송</th>
-        <th>결과</th>
-        <tr  align="center">
-            <td width="100">
-                <button type="button"  align="center" th:id="normalMail">발송</button>
-            </td>
-            <td width="100">
-                <div th:id="normalMailResult"></div>
-            </td>
-        </tr>
-    </table>
-    <table border="1" width="200">
-        <th>인증 발송</th>
-        <th>결과</th>
-        <tr  align="center">
-            <td width="100">
-                <button type="button"  align="center" th:id="authMail">발송</button>
-            </td>
-            <td width="100">
-                <div th:id="authMailResult"></div>
-            </td>
-        </tr>
-    </table>
     <label><input type="radio" th:name="mailType" th:value="normal">일반</label></label>
     <label><input type="radio" th:name="mailType" th:value="auth">인증</label></label>
     <label><input type="radio" th:name="mailType" th:value="ad">광고</label></label>

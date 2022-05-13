@@ -14,14 +14,3 @@ public class EmailRequestInfo {
     private TemplateInfo templateParameter = new TemplateInfo();
     private List<ReceiveInfo> receiveMailAddr;
 }
-
-class ReceiveInfo {
-    private String receiveMailAddress = "";
-    private String receiveType = "";
-}
-
-class TemplateInfo {
-    private String parameterKey = "";
-    private String parameterValue = "";
-
-}
