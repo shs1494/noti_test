@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TemplateInfo {
-    private String parameterKey = "";
-    private String parameterValue = "";
+    private String parameterKey;
+    private Object parameterValue;
 }
