@@ -6,14 +6,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ReceiveInfo {
-    private String receiveMailAddress;
+    private String receiveMailAddr;
     private String receiveType;
 
-    public ReceiveInfo(String receiveMailAddress) {
-        this.receiveMailAddress = receiveMailAddress;
+    public ReceiveInfo(String receiveMailAddr) {
+        this.receiveMailAddr = receiveMailAddr;
     }
-    public ReceiveInfo(String receiveMailAddress, String receiveType) {
-        this.receiveMailAddress = receiveMailAddress;
+    public ReceiveInfo(String receiveMailAddr, String receiveType) {
+        this.receiveMailAddr = receiveMailAddr;
         this.receiveType = receiveType;
     }
 }

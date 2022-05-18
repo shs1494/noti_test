@@ -9,10 +9,10 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class EmailRequestInfo {
+public class AuthemailRequestInfo {
     private String senderAddress;
     private String title;
     private String body;
     private List<TemplateInfo> templateParameter;
-    private List<ReceiveInfo> receiverList;
+    private ReceiveInfo receiver;
 }
