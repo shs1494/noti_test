@@ -1,22 +1,23 @@
 package com.noti.platform.first.master.email.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.noti.platform.first.domain.email.request.CommonInfo;
-import com.noti.platform.first.domain.email.request.RequestDTO;
+import com.noti.platform.first.domain.email.request.*;
 import com.noti.platform.first.domain.email.response.EmailResultHeader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 
 @Service
 public class EmailService {
@@ -26,7 +27,7 @@ public class EmailService {
 
     public EmailResultHeader emailSendFromOpenApi(RequestDTO requestDTO) throws IOException {
 
-        ResponseEntity<String> response = postTemplateBuild(requestDTO);
+        ResponseEntity<String> response = newPostTemplateBuild(requestDTO);
 
         ObjectMapper objectMapper = new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
@@ -34,21 +35,21 @@ public class EmailService {
         readBody = readBody.get("header");
 
         return objectMapper.readValue(readBody.toString(), EmailResultHeader.class);
-    }
+}
 
-    public ResponseEntity<String> postTemplateBuild(RequestDTO requestDTO) throws IOException {
+    public ResponseEntity<String> newPostTemplateBuild(RequestDTO requestDTO) throws IOException {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("X-Secret-Key", commonInfo.getEmailSecretkey());
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestJson(requestDTO.getMailType(), requestDTO.getReceiveTypes()), headers);
+        HttpEntity<String> requestEntity = new HttpEntity<>(emailRequestJsonInit(requestDTO),headers);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlBuild(requestDTO.getMailType()));
 
         RestTemplate restTemplate = new RestTemplate();
 
-        return restTemplate.exchange(builder.toUriString(), HttpMethod.POST, requestEntity, String.class);
+        return restTemplate.postForEntity(builder.toUriString(), requestEntity, String.class);
     }
 
     public String urlBuild(String mailType) throws IOException {
@@ -63,6 +64,9 @@ public class EmailService {
             case "tag":
                 uri = "/sender/tagMail";
                 break;
+            case "ad":
+                uri = "/sender/ad-Mail";
+                break;
         }
 
         String url = "https://api-mail.cloud.toast.com/email/v2.0/appKeys/" + commonInfo.getEmailAppkey() + uri;
@@ -70,30 +74,31 @@ public class EmailService {
         return url;
     }
 
-    public String requestJson(String mailType, List<String> receiveTypes) throws IOException {
-        String jsonBody = "";
-        Set<String> receiveTypeSets = new HashSet<>(receiveTypes);
-        switch (mailType) {
-            case "normal":
-                String receiveType = "";
-                if (receiveTypeSets.contains("MRT1")) {
-                    receiveType += ",{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\",\"receiveType\":\"MRT1\"}";
-                }
-                if (receiveTypeSets.contains("MRT2")) {
-                    receiveType += ",{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\",\"receiveType\":\"MRT2\"}";
-                }
-                jsonBody = "{\"senderAddress\":\"" + commonInfo.getEmailAddress() + "\", \"title\":\"test\",\"body\":\"일반 테스트\",\"receiverList\":["
-                        + "{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\",\"receiveType\":\"MRT0\"}"
-                + receiveType + "]}";
-                break;
-            case "auth":
-                jsonBody = "{\"senderAddress\":\"" + commonInfo.getEmailAddress() + "\", \"title\":\"test\",\"body\":\"인증 테스트\",\"receiver\":{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\"}}";
-                break;
-            case "tag":
-                jsonBody = "{\"senderAddress\":\"" + commonInfo.getEmailAddress() + "\", \"title\":\"test\",\"body\":\"태그 테스트\",\"receiverList\":[{\"receiveMailAddr\":\"" + commonInfo.getEmailAddress() + "\",\"receiveType\":\"MRT0\"}]}";
-                break;
-        }
-        return jsonBody;
-    }
+    public String emailRequestJsonInit(RequestDTO requestDTO) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        if (requestDTO.getMailType().equals("auth")) {
+            ReceiveInfo receiveInfo = new ReceiveInfo(commonInfo.getEmailAddress());
+            AuthemailRequestInfo authemailRequestInfo = AuthemailRequestInfo.builder()
+                    .senderAddress(commonInfo.getEmailAddress())
+                    .title("Test")
+                    .body(requestDTO.getMailType()+" 발송 테스트")
+                    .receiver(receiveInfo)
+                    .build();
+            return objectMapper.writeValueAsString(authemailRequestInfo);
+        } else {
+            List<ReceiveInfo> receiverList = new ArrayList<>();
+            receiverList.add(new ReceiveInfo(commonInfo.getEmailAddress(), "MRT0"));
 
+            for (int i = 0;i<requestDTO.getReceiveTypes().size();i++) {
+                receiverList.add(new ReceiveInfo(commonInfo.getEmailAddress(), requestDTO.getReceiveTypes().get(i)));
+            }
+            EmailRequestInfo emailRequestInfo = EmailRequestInfo.builder()
+                    .senderAddress(commonInfo.getEmailAddress())
+                    .title("Test")
+                    .body(requestDTO.getMailType()+" 발송 테스트")
+                    .receiverList(receiverList)
+                    .build();
+            return objectMapper.writeValueAsString(emailRequestInfo);
+        }
+    }
 }

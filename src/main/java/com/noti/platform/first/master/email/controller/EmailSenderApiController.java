@@ -6,7 +6,9 @@ import com.noti.platform.first.domain.email.response.EmailResultHeader;
 import com.noti.platform.first.master.email.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
@@ -22,6 +24,7 @@ public class EmailSenderApiController {
         EmailResultHeader response = emailService.emailSendFromOpenApi(requestDTO);
         log.info(requestDTO.getMailType());
         String result2 = String.format("[Result] %s (%s)", response.getResultMessage(), response.getResultCode());
+        log.info(emailService.emailRequestJsonInit(requestDTO));
 
         return result2;
     }
