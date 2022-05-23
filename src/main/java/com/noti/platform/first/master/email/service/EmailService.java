@@ -65,7 +65,7 @@ public class EmailService {
                 uri = "/sender/tagMail";
                 break;
             case "ad":
-                uri = "/sender/ad-Mail";
+                uri = "/sender/ad-mail";
                 break;
         }
 
@@ -86,6 +86,10 @@ public class EmailService {
                     .build();
             return objectMapper.writeValueAsString(authemailRequestInfo);
         } else {
+            String subTitle = "";
+            if (requestDTO.getMailType().equals("ad")) {
+                subTitle = "(광고)";
+            }
             List<ReceiveInfo> receiverList = new ArrayList<>();
             receiverList.add(new ReceiveInfo(commonInfo.getEmailAddress(), "MRT0"));
 
@@ -94,7 +98,7 @@ public class EmailService {
             }
             EmailRequestInfo emailRequestInfo = EmailRequestInfo.builder()
                     .senderAddress(commonInfo.getEmailAddress())
-                    .title("Test")
+                    .title(subTitle+"Test")
                     .body(requestDTO.getMailType()+" 발송 테스트")
                     .receiverList(receiverList)
                     .build();
