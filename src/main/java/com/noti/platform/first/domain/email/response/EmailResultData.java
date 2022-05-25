@@ -4,12 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
 @Getter
 @Setter
 @ToString
-public class EmailResultBody {
-    private String requestId;
-    private List<EmailResultBodyInfo> results;
+public class EmailResultData {
+    private EmailResultBody data;
 }
