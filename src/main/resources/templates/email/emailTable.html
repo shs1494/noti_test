@@ -1,0 +1,5 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <td><span th:text="${emailResultInfo.header.resultCode}"></span></td>
+    <td><span th:text="${emailResultInfo.header.resultMessage}"></span></td>
+    <td><span th:id="resultId" th:text="${emailResultInfo.body.data.requestId}" th:attr="onclick=|retrieveMail('${emailResultInfo.body.data.requestId}')|"></span></td>
+</html>

@@ -16,13 +16,16 @@
     <label><input type="checkbox" th:name="receiveType" th:value="MRT1">참조</label></label>
     <label><input type="checkbox" th:name="receiveType" th:value="MRT2">숨은참조</label></label>
     <button type="button"  align="center" th:id="mailSender">발송</button>
-    <table border="1" width="200">
-        <th>결과</th>
-        <tr  align="center">
-            <td width="100">
-                <div th:id="mailResult"></div>
-            </td>
+    <table class="table table-hover" id="mailTest" border="1" width="500" align="center">
+        <thead>
+        <tr>
+            <th>결과 코드</th>
+            <th>결과 메세지</th>
+            <th>요청 id</th>
         </tr>
+        </thead>
+        <tbody th:id="includedContent">
+        </tbody>
     </table>
 </body>
 </html>

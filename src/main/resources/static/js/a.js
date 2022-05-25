@@ -1,4 +1,7 @@
-$("#mailSender").on("click", mailSender);
+$(document).ready(function () {
+    $("#mailSender").on("click", mailSender);
+    // $("span[name='resultId']").on("click", test);
+});
 
 function mailSender() {
     $.ajax({
@@ -6,9 +9,11 @@ function mailSender() {
         type: "post",
         contentType: 'application/json',
         data: checkBoxValue(),
-        dataType: "text",
+        dataType: "html",
         success: function (result) {
-            $("#mailResult").text(result);
+            var mailResult = document.createElement('tr');
+            mailResult.innerHTML = result;
+            $("#includedContent").prepend(mailResult);
         }
     });
 }

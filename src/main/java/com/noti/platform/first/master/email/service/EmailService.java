@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noti.platform.first.domain.email.request.*;
-import com.noti.platform.first.domain.email.response.EmailResultHeader;
+import com.noti.platform.first.domain.email.response.EmailResultInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,16 +25,16 @@ public class EmailService {
     @Autowired
     private CommonInfo commonInfo;
 
-    public EmailResultHeader emailSendFromOpenApi(RequestDTO requestDTO) throws IOException {
+    public EmailResultInfo emailSendFromOpenApi(RequestDTO requestDTO) throws IOException {
 
         ResponseEntity<String> response = newPostTemplateBuild(requestDTO);
 
         ObjectMapper objectMapper = new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
         JsonNode readBody = objectMapper.readTree(response.getBody());
-        readBody = readBody.get("header");
+//        readBody = readBody.get("header");
 
-        return objectMapper.readValue(readBody.toString(), EmailResultHeader.class);
+        return objectMapper.readValue(readBody.toString(), EmailResultInfo.class);
 }
 
     public ResponseEntity<String> newPostTemplateBuild(RequestDTO requestDTO) throws IOException {
