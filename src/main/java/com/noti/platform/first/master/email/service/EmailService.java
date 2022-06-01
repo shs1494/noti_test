@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -42,11 +43,12 @@ public class EmailService {
 
         HttpEntity<String> requestEntity = new HttpEntity<>(emailRequestJsonInit(requestDTO),headers);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlBuild(requestDTO.getMailType()));
+//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlBuild(requestDTO.getMailType()));
 
         RestTemplate restTemplate = new RestTemplate();
 
-        return restTemplate.postForEntity(builder.toUriString(), requestEntity, String.class);
+//        return restTemplate.postForEntity(builder.toUriString(), requestEntity, String.class);
+        return restTemplate.postForEntity(newUrlBuilder(requestDTO.getMailType()), requestEntity, String.class);
     }
 
     public String emailRetrieveFromOpenApi(String requestId) throws IOException {
@@ -67,39 +69,28 @@ public class EmailService {
         headers.set("X-Secret-Key", commonInfo.getEmailSecretkey());
 
         HttpEntity<String> requestEntitiy = new HttpEntity<>(headers);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlBuild(""))
-                .path("/sender/mail/").path(requestId).path("/0");
+        UriComponents builder = UriComponentsBuilder.fromHttpUrl(newUrlBuilder("mail"))
+                .path("/"+requestId).path("/0")
+                .build();
+        
         RestTemplate restTemplate = new RestTemplate();
 
-        return restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntitiy, String.class);
+        return restTemplate.exchange(builder.toString(), HttpMethod.GET, requestEntitiy, String.class);
     }
 
-    public String urlBuild(String mailType) throws IOException {
-        String uri = "";
-        switch (mailType) {
-            case "normal":
-                uri = "/sender/mail";
-                break;
-            case "auth":
-                uri = "/sender/auth-mail";
-                break;
-            case "tag":
-                uri = "/sender/tagMail";
-                break;
-            case "ad":
-                uri = "/sender/ad-mail";
-                break;
-            default: uri = "";
-        }
-
-        String url = "https://api-mail.cloud.toast.com/email/v2.0/appKeys/" + commonInfo.getEmailAppkey() + uri;
-
-        return url;
+    public String newUrlBuilder(String mailType) {
+        UriComponents builder = UriComponentsBuilder
+                .fromUriString("https://api-mail.cloud.toast.com/email/v2.0/appKeys/")
+                .path(commonInfo.getEmailAppkey())
+                .path("/sender/")
+                .path(mailType)
+                .build();
+        return builder.toString();
     }
 
     public String emailRequestJsonInit(RequestDTO requestDTO) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        if (requestDTO.getMailType().equals("auth")) {
+        if (requestDTO.getMailType().equals("auth-mail")) {
             ReceiveInfo receiveInfo = new ReceiveInfo(commonInfo.getEmailAddress());
             AuthemailRequestInfo authemailRequestInfo = AuthemailRequestInfo.builder()
                     .senderAddress(commonInfo.getEmailAddress())
@@ -110,7 +101,7 @@ public class EmailService {
             return objectMapper.writeValueAsString(authemailRequestInfo);
         } else {
             String subTitle = "";
-            if (requestDTO.getMailType().equals("ad")) {
+            if (requestDTO.getMailType().equals("ad-mail")) {
                 subTitle = "(광고)";
             }
             List<ReceiveInfo> receiverList = new ArrayList<>();
