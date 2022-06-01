@@ -36,6 +36,6 @@ public class EmailSenderApiController {
         model.addAttribute("emailResultInfo",response);
         log.info(response.getHeader().getResultMessage());
         return "email/emailTable";
-
     }
+
 }

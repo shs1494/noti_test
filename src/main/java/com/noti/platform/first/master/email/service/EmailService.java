@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noti.platform.first.domain.email.request.*;
 import com.noti.platform.first.domain.email.response.EmailResultInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -35,7 +32,7 @@ public class EmailService {
 //        readBody = readBody.get("header");
 
         return objectMapper.readValue(readBody.toString(), EmailResultInfo.class);
-}
+    }
 
     public ResponseEntity<String> newPostTemplateBuild(RequestDTO requestDTO) throws IOException {
 
@@ -50,6 +47,31 @@ public class EmailService {
         RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate.postForEntity(builder.toUriString(), requestEntity, String.class);
+    }
+
+    public String emailRetrieveFromOpenApi(String requestId) throws IOException {
+
+        ResponseEntity<String> response = getTemplateBuild(requestId);
+
+        ObjectMapper objectMapper = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+        JsonNode readBody = objectMapper.readTree(response.getBody());
+        String result = readBody.get("body").get("data").get("mailStatusName").toString();
+
+        return result;
+    }
+
+    public ResponseEntity<String> getTemplateBuild(String requestId) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("X-Secret-Key", commonInfo.getEmailSecretkey());
+
+        HttpEntity<String> requestEntitiy = new HttpEntity<>(headers);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlBuild(""))
+                .path("/sender/mail/").path(requestId).path("/0");
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntitiy, String.class);
     }
 
     public String urlBuild(String mailType) throws IOException {
@@ -67,6 +89,7 @@ public class EmailService {
             case "ad":
                 uri = "/sender/ad-mail";
                 break;
+            default: uri = "";
         }
 
         String url = "https://api-mail.cloud.toast.com/email/v2.0/appKeys/" + commonInfo.getEmailAppkey() + uri;

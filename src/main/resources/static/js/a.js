@@ -34,3 +34,18 @@ function checkBoxValue() {
 
     return jsonData;
 }
+
+function retrieveMail(requestId) {
+    console.log(requestId);
+    $.ajax({
+        url: "/retrieveEmail",
+        type: "post",
+        contentType: 'application/json',
+        data: requestId,
+        dataType: "text",
+        success: function (retrieveMailResult) {
+            console.log(retrieveMailResult);
+            alert(retrieveMailResult);
+        }
+    })
+}
