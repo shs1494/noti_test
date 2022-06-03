@@ -4,24 +4,38 @@
 <head>
     <script src="/webjars/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" th:src="@{/js/a.js}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}" defer></link>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <title>Hello</title>
 </head>
 <body>
-    <label><input type="radio" th:name="mailType" th:value="mail">일반</label></label>
-    <label><input type="radio" th:name="mailType" th:value="auth-mail">인증</label></label>
-    <label><input type="radio" th:name="mailType" th:value="ad-mail">광고</label></label>
-    <label><input type="radio" th:name="mailType" th:value="tagMail">태그</label></label>
+    <input type="radio" class="form-check-input" th:name="mailType" th:value="mail" th:onclick="eachMailFalseCheck()">
+    <label class="form-check-label">일반</label>
+    <input type="radio" class="form-check-input" th:name="mailType" th:value="auth-mail" th:onclick="eachMailtrueCheck()">
+    <label class="form-check-label">인증</label>
+    <input type="radio" class="form-check-input" th:name="mailType" th:value="ad-mail" th:onclick="eachMailFalseCheck()">
+    <label class="form-check-label">광고</label>
+    <input type="radio" class="form-check-input" th:name="mailType" th:value="tagMail" th:onclick="eachMailtrueCheck()">
+    <label class="form-check-label">태그</label>
     <br>
-    <label><input type="checkbox" th:name="receiveType" th:value="MRT1">참조</label></label>
-    <label><input type="checkbox" th:name="receiveType" th:value="MRT2">숨은참조</label></label>
-    <button type="button"  align="center" th:id="mailSender">발송</button>
+    <input type="checkbox" th:id="eachType" th:value="eachMail" th:disabled="disabled">
+    <label class="form-check-label">개별</label>
+    <br>
+    <input type="checkbox" class="form-check-input" th:name="receiveType" th:value="MRT1">
+    <label class="form-check-label">참조</label>
+    <input type="checkbox" class="form-check-input" th:name="receiveType" th:value="MRT2">
+    <label class="form-check-label">숨은참조</label>
+    <br>
+    <button type="button" class="btn btn-primary" align="center" th:id="mailSender">발송</button>
     <table class="table table-hover" id="mailTest" border="1" width="500" align="center">
         <thead>
         <tr>
             <th width="95">결과 코드</th>
             <th width="115">결과 메세지</th>
             <th>요청 id</th>
+            <th>메일 타입</th>
         </tr>
         </thead>
         <tbody th:id="includedContent">

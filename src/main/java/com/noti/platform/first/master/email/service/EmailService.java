@@ -48,7 +48,7 @@ public class EmailService {
         RestTemplate restTemplate = new RestTemplate();
 
 //        return restTemplate.postForEntity(builder.toUriString(), requestEntity, String.class);
-        return restTemplate.postForEntity(newUrlBuilder(requestDTO.getMailType()), requestEntity, String.class);
+        return restTemplate.postForEntity(newUrlBuilder(requestDTO.getMailType(), requestDTO.isEachType()), requestEntity, String.class);
     }
 
     public String emailRetrieveFromOpenApi(String requestId) throws IOException {
@@ -69,16 +69,24 @@ public class EmailService {
         headers.set("X-Secret-Key", commonInfo.getEmailSecretkey());
 
         HttpEntity<String> requestEntitiy = new HttpEntity<>(headers);
-        UriComponents builder = UriComponentsBuilder.fromHttpUrl(newUrlBuilder("mail"))
+        UriComponents builder = UriComponentsBuilder.fromHttpUrl(newUrlBuilder("mail",false))
                 .path("/"+requestId).path("/0")
                 .build();
-        
+
         RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate.exchange(builder.toString(), HttpMethod.GET, requestEntitiy, String.class);
     }
 
-    public String newUrlBuilder(String mailType) {
+    public String newUrlBuilder(String mailType, boolean eachType) {
+        if (eachType) {
+            if (mailType.equals("mail")) {
+                mailType = "eachMail";
+            }
+            else {
+                mailType = "ad-eachMail";
+            }
+        }
         UriComponents builder = UriComponentsBuilder
                 .fromUriString("https://api-mail.cloud.toast.com/email/v2.0/appKeys/")
                 .path(commonInfo.getEmailAppkey())

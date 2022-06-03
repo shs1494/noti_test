@@ -34,7 +34,6 @@ public class EmailSenderApiController {
     public Object newEmailSendFromOpenApi(@RequestBody RequestDTO requestDTO, Model model) throws IOException {
         EmailResultInfo response = emailService.emailSendFromOpenApi(requestDTO);
         model.addAttribute("emailResultInfo",response);
-        log.info(response.getHeader().getResultMessage());
         return "email/emailTable";
     }
 
