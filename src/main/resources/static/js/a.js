@@ -18,7 +18,11 @@ function mailSender() {
 
             var mailType = $("input[name='mailType']:checked").val();
             var mailResultType = document.createElement('td');
-            mailResultType.innerText = mailType;
+            if ($("input[id='eachType']").prop('checked')) {
+                mailResultType.innerText = mailType+"(Each)";
+            } else {
+                mailResultType.innerText = mailType;
+            }
             $('tbody').children()[0].append(mailResultType);
             $('td').addClass("hyeon");
         }
