@@ -11,6 +11,7 @@ public class ReceiveInfo {
 
     public ReceiveInfo(String receiveMailAddr) {
         this.receiveMailAddr = receiveMailAddr;
+        this.receiveType = "MRT0";
     }
     public ReceiveInfo(String receiveMailAddr, String receiveType) {
         this.receiveMailAddr = receiveMailAddr;

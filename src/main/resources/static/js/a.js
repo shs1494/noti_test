@@ -1,7 +1,6 @@
 $(document).ready(function () {
     $("#mailSender").on("click", mailSender);
     $('th,td').addClass("hyeon");
-    // $("span[name='resultId']").on("click", test);
 });
 
 function mailSender() {
@@ -19,9 +18,9 @@ function mailSender() {
             var mailType = $("input[name='mailType']:checked").val();
             var mailResultType = document.createElement('td');
             if ($("input[id='eachType']").prop('checked')) {
-                mailResultType.innerText = mailType+"(Each)";
+                mailResultType.innerText = languageChangeByMailType(mailType)+"(개별)";
             } else {
-                mailResultType.innerText = mailType;
+                mailResultType.innerText = languageChangeByMailType(mailType);
             }
             $('tbody').children()[0].append(mailResultType);
             $('td').addClass("hyeon");
@@ -29,20 +28,36 @@ function mailSender() {
     });
 }
 
+function languageChangeByMailType(mailType) {
+    if (mailType === "mail") {
+        return "일반"
+    } else if (mailType === "auth-mail") {
+        return "인증"
+    } else {
+        return "광고"
+    }
+}
+
 function checkBoxValue() {
     var receiveTypes = [];
+    var mailAddressList = [];
+
     $("input[name='receiveType']:checked").each(function() {
-    receiveTypes.push($(this).attr('value'));
+        receiveTypes.push($(this).attr('value'));
+    });
+
+    $("input[name='emailAddress']").each(function() {
+        mailAddressList.push($(this).val())
     });
 
     var data = {
         mailType : $("input[name='mailType']:checked").val(),
         receiveTypes: receiveTypes,
-        eachType : $("input[id='eachType']").prop('checked')
+        eachType : $("input[id='eachType']").prop('checked'),
+        mailAddressList : mailAddressList
     };
 
     var jsonData = JSON.stringify(data);
-    console.log(jsonData);
 
     return jsonData;
 }
@@ -62,14 +77,42 @@ function retrieveMail(requestId) {
     })
 }
 
-function eachMailFalseCheck() {
-    // var eachCheck = document.getElementById('eachType').disabled = false;
-    document.getElementById('eachType').disabled = false;
-    // console.log(eachCheck);
-    // eachCheck.disabled = false;
+function checkEachTypeByValue(value) {
+    if (value == 'auth-mail') {
+        $("input:checkbox[id='eachType']").prop("checked", false);
+        document.getElementById('eachType').disabled = true;
+    } else {
+        document.getElementById('eachType').disabled = false;
+    }
 }
-function eachMailtrueCheck() {
-    $("input:checkbox[id='eachType']").prop("checked", false);
-    // document.getElementById('eachType').removeAttribute('checked');
-    document.getElementById('eachType').disabled = true;
+
+function ccMailAddressCheck() {
+    if ($("input:checkbox[id='ccType']").prop("checked")) {
+        document.getElementById('ccMailAddr').disabled = false;
+    } else {
+        $("input[id='ccMailAddr']").val(null);
+        document.getElementById('ccMailAddr').disabled = true;
+    }
 }
+
+function bccMailAddressCheck() {
+    if ($("input:checkbox[id='bccType']").prop("checked")) {
+        document.getElementById('bccMailAddr').disabled = false;
+    } else {
+        $("input[id='bccMailAddr']").val(null);
+        document.getElementById('bccMailAddr').disabled = true;
+    }
+}
+
+var re = /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+
+function verify(id) {
+    var email = document.getElementById(id).value;
+    if (email == '' || !re.test(email)) {
+        alert("올바른 이메일 주소를 입력하세요")
+        document.getElementById('mailSender').disabled = true;
+    } else {
+        document.getElementById('mailSender').disabled = false;
+    }
+}
+

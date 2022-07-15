@@ -43,8 +43,6 @@ public class EmailService {
 
         HttpEntity<String> requestEntity = new HttpEntity<>(emailRequestJsonInit(requestDTO),headers);
 
-//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(urlBuild(requestDTO.getMailType()));
-
         RestTemplate restTemplate = new RestTemplate();
 
 //        return restTemplate.postForEntity(builder.toUriString(), requestEntity, String.class);
@@ -93,19 +91,22 @@ public class EmailService {
                 .path("/sender/")
                 .path(mailType)
                 .build();
+
         return builder.toString();
     }
 
     public String emailRequestJsonInit(RequestDTO requestDTO) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         if (requestDTO.getMailType().equals("auth-mail")) {
-            ReceiveInfo receiveInfo = new ReceiveInfo(commonInfo.getEmailAddress());
+//            ReceiveInfo receiveInfo = new ReceiveInfo(commonInfo.getEmailAddress());
+            ReceiveInfo receiveInfo = new ReceiveInfo(requestDTO.getMailAddressList().get(0));
             AuthemailRequestInfo authemailRequestInfo = AuthemailRequestInfo.builder()
                     .senderAddress(commonInfo.getEmailAddress())
                     .title("Test")
                     .body(requestDTO.getMailType()+" 발송 테스트")
                     .receiver(receiveInfo)
                     .build();
+
             return objectMapper.writeValueAsString(authemailRequestInfo);
         } else {
             String subTitle = "";
@@ -113,17 +114,21 @@ public class EmailService {
                 subTitle = "(광고)";
             }
             List<ReceiveInfo> receiverList = new ArrayList<>();
-            receiverList.add(new ReceiveInfo(commonInfo.getEmailAddress(), "MRT0"));
+            receiverList.add(new ReceiveInfo(requestDTO.getMailAddressList().get(0)));
 
             for (int i = 0;i<requestDTO.getReceiveTypes().size();i++) {
-                receiverList.add(new ReceiveInfo(commonInfo.getEmailAddress(), requestDTO.getReceiveTypes().get(i)));
+                System.out.println(requestDTO.getMailAddressList().get(i+1));
+                System.out.println(requestDTO.getReceiveTypes().get(i));
+                receiverList.add(new ReceiveInfo(requestDTO.getMailAddressList().get(i+1), requestDTO.getReceiveTypes().get(i)));
             }
+
             EmailRequestInfo emailRequestInfo = EmailRequestInfo.builder()
                     .senderAddress(commonInfo.getEmailAddress())
                     .title(subTitle+"Test")
                     .body(requestDTO.getMailType()+" 발송 테스트")
                     .receiverList(receiverList)
                     .build();
+
             return objectMapper.writeValueAsString(emailRequestInfo);
         }
     }

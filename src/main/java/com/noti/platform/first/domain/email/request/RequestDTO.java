@@ -11,4 +11,5 @@ public class RequestDTO {
     private String mailType;
     private List<String> receiveTypes;
     private boolean eachType;
+    private List<String> mailAddressList;
 }

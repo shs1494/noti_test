@@ -1,2 +1,5 @@
 .hyeon { border-left: 1px solid black; }
 #mailTest { width: 100%; border: 3px solid; }
+.table-first tbody tr:first-child td {
+    background-color: #bde9ff;
+}
